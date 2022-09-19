@@ -14,16 +14,17 @@ on:
   workflow_dispatch:
 
 env:
-  CROSS_ROOT_DIR: $GITHUB_WORKSPACE/build-envs/armhf
+  CROSS_ROOT_DIR: ~/build-envs/armhf
   CROSS_ARCH: armhf
   CROSS_DEBIAN_VER: buster
-  PSYDOOM_REPO_PATH: $GITHUB_WORKSPACE/GIT/PsyDoom
+  PSYDOOM_REPO_PATH: ~/GIT/PsyDoom
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    container: debian:10
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -32,20 +33,22 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: sudo apt-get install qemu-user-static debootstrap
+        run: |
+          apt-get update
+          apt-get install qemu-user-static debootstrap
 
       # Runs a set of commands using the runners shell
       - name: chroot
         run: |
           mkdir -p "${{ env.CROSS_ROOT_DIR }}"
           #sudo mount -i -o remount,exec,dev /home/runner
-          wget -qO- https://archive.raspbian.org/raspbian.public.key | gpg --import -
-          sudo debootstrap --no-check-gpg --foreign --arch=${{ env.CROSS_ARCH }} ${{ env.CROSS_DEBIAN_VER }} "${{ env.CROSS_ROOT_DIR }}" http://archive.raspbian.org/raspbian
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
+          #wget -qO- https://archive.raspbian.org/raspbian.public.key | gpg --import -
+          debootstrap --no-check-gpg --foreign --arch=${{ env.CROSS_ARCH }} ${{ env.CROSS_DEBIAN_VER }} "${{ env.CROSS_ROOT_DIR }}" http://archive.raspbian.org/raspbian
+          #sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
 
       - name: chroot 2
         run: |
-          sudo chroot "${{ env.CROSS_ROOT_DIR }}" /debootstrap/debootstrap --second-stage
+          chroot "${{ env.CROSS_ROOT_DIR }}" /debootstrap/debootstrap --second-stage
           echo deb http://mirrordirector.raspbian.org/raspbian/ ${{ env.CROSS_DEBIAN_VER }} main contrib non-free rpi | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
           echo deb http://archive.raspberrypi.org/debian/ ${{ env.CROSS_DEBIAN_VER }} main | sudo tee -a "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
           echo deb-src http://mirrordirector.raspbian.org/raspbian/ ${{ env.CROSS_DEBIAN_VER }} main contrib non-free rpi | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
@@ -53,10 +56,10 @@ jobs:
 
       - name: chroot 3
         run: |
-          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get update
-          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get upgrade
+          chroot "${{ env.CROSS_ROOT_DIR }}" apt-get update
+          chroot "${{ env.CROSS_ROOT_DIR }}" apt-get upgrade
 
       - name: chroot 4
         run: |
-          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get build-deps binutils
-          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get source binutils
+          chroot "${{ env.CROSS_ROOT_DIR }}" apt-get build-deps binutils
+          chroot "${{ env.CROSS_ROOT_DIR }}" apt-get source binutils
