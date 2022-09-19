@@ -35,7 +35,7 @@ jobs:
       - name: Run a one-line script
         run: |
           apt-get update
-          apt-get install qemu-user-static debootstrap
+          apt-get -y install qemu-user-static debootstrap
 
       # Runs a set of commands using the runners shell
       - name: chroot
@@ -61,5 +61,5 @@ jobs:
 
       - name: chroot 4
         run: |
-          chroot "${{ env.CROSS_ROOT_DIR }}" apt-get build-deps binutils
+          chroot "${{ env.CROSS_ROOT_DIR }}" apt-get -y build-deps binutils
           chroot "${{ env.CROSS_ROOT_DIR }}" apt-get source binutils
