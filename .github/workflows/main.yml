@@ -38,7 +38,7 @@ jobs:
       - name: chroot
         run: |
           mkdir -p "${{ env.CROSS_ROOT_DIR }}"
-          #sudo mount -i -o remount,exec,dev /home/runner
+          sudo mount -i -o remount,exec,dev $GITHUB_WORKSPACE
           sudo debootstrap --no-check-gpg --foreign --arch=${{ env.CROSS_ARCH }} ${{ env.CROSS_DEBIAN_VER }} "${{ env.CROSS_ROOT_DIR }}" http://archive.raspbian.org/raspbian
 
       - name: chroot 2
