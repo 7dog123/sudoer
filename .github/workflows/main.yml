@@ -13,6 +13,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  CROSS_ROOT_DIR: $GITHUB_WORKSPACE/build-envs/armhf
+  CROSS_ARCH: armhf
+  CROSS_DEBIAN_VER: buster
+  PSYDOOM_REPO_PATH: $GITHUB_WORKSPACE/GIT/PsyDoom
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -30,14 +35,26 @@ jobs:
         run: sudo apt-get install qemu-user-static debootstrap
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: chroot
         run: |
-          #   Root folder on your system for the new 'chroot' build environment
-          export CROSS_ROOT_DIR=~/build-envs/armhf
-          #   Target CPU architecture (E.G 'armhf' or 'arm64')
-          export CROSS_ARCH=armhf
-          #   Which version of Debian the target version of Raspbian is based on (E.G: 'bullseye', 'buster', 'stretch' etc.)
-          export CROSS_DEBIAN_VER=buster
-          mkdir -p "${CROSS_ROOT_DIR}"
+          mkdir -p "${{ env.CROSS_ROOT_DIR }}"
           #sudo mount -i -o remount,exec,dev /home/runner
-          sudo debootstrap --no-check-gpg --foreign --arch=${CROSS_ARCH} ${CROSS_DEBIAN_VER} "${CROSS_ROOT_DIR}" http://archive.raspbian.org/raspbian
+          sudo debootstrap --no-check-gpg --foreign --arch=${{ env.CROSS_ARCH }} ${{ env.CROSS_DEBIAN_VER }} "${{ env.CROSS_ROOT_DIR }}" http://archive.raspbian.org/raspbian
+
+      - name: chroot 2
+        run: |
+          sudo chroot "${{ env.CROSS_ROOT_DIR }}" /debootstrap/debootstrap --second-stage
+          echo deb http://mirrordirector.raspbian.org/raspbian/ ${{ env.CROSS_DEBIAN_VER }} main contrib non-free rpi | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
+          echo deb http://archive.raspberrypi.org/debian/ ${{ env.CROSS_DEBIAN_VER }} main | sudo tee -a "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
+          echo deb-src http://mirrordirector.raspbian.org/raspbian/ ${{ env.CROSS_DEBIAN_VER }} main contrib non-free rpi | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
+          echo deb-src http://archive.raspberrypi.org/debian/ ${{ env.CROSS_DEBIAN_VER }} main | sudo tee -a "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
+
+      - name: chroot 3
+        run: |
+          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get update
+          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get upgrade
+
+      - name: chroot 4
+        run: |
+          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get build-deps binutils
+          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get source binutils
