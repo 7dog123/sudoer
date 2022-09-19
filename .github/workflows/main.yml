@@ -31,7 +31,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
-        run |
+        run: |
           #   Root folder on your system for the new 'chroot' build environment
           export CROSS_ROOT_DIR=~/build-envs/armhf
           #   Target CPU architecture (E.G 'armhf' or 'arm64')
