@@ -27,16 +27,17 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo Hello, world!
+        run: sudo apt-get install qemu-user-static debootstrap
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
-        run: |
-          ls -l /home/runner/
-          id -u runner
-          id -g runner
-          # search for 'foo' in the passswd file #
-          grep runner /etc/passwd # search for 'foo' in the group file #
-          grep runner /etc/group # use the find command to locate files owned by ' foo'#
-          #find / -user runner -ls
-          #find / -group sales -ls
+        run |
+          #   Root folder on your system for the new 'chroot' build environment
+          export CROSS_ROOT_DIR=~/build-envs/armhf
+          #   Target CPU architecture (E.G 'armhf' or 'arm64')
+          export CROSS_ARCH=armhf
+          #   Which version of Debian the target version of Raspbian is based on (E.G: 'bullseye', 'buster', 'stretch' etc.)
+          export CROSS_DEBIAN_VER=buster
+          mkdir -p "${CROSS_ROOT_DIR}"
+          #sudo mount -i -o remount,exec,dev /home/runner
+          sudo debootstrap --no-check-gpg --foreign --arch=${CROSS_ARCH} ${CROSS_DEBIAN_VER} "${CROSS_ROOT_DIR}" http://archive.raspbian.org/raspbian
