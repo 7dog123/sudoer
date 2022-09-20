@@ -43,7 +43,6 @@ jobs:
           #sudo mount -i -o remount,exec,dev /home/runner
           wget -qO- https://archive.raspbian.org/raspbian.public.key | gpg --import -
           sudo debootstrap --no-check-gpg --foreign --arch=${{ env.CROSS_ARCH }} ${{ env.CROSS_DEBIAN_VER }} "${{ env.CROSS_ROOT_DIR }}" http://archive.raspbian.org/raspbian
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 9165938D90FDDD2E
 
       - name: chroot 2
         run: |
@@ -55,6 +54,7 @@ jobs:
 
       - name: chroot 3
         run: |
+          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get update
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get upgrade
 
