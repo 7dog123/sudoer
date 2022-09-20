@@ -42,7 +42,7 @@ jobs:
           mkdir -p "${{ env.CROSS_ROOT_DIR }}"
           #sudo mount -i -o remount,exec,dev /home/runner
           wget -qO- https://archive.raspbian.org/raspbian.public.key | gpg --import -
-          #sudo debootstrap --no-check-gpg --foreign --arch=${{ env.CROSS_ARCH }} ${{ env.CROSS_DEBIAN_VER }} "${{ env.CROSS_ROOT_DIR }}" http://archive.raspbian.org/raspbian
+          sudo debootstrap --no-check-gpg --foreign --arch=${{ env.CROSS_ARCH }} ${{ env.CROSS_DEBIAN_VER }} "${{ env.CROSS_ROOT_DIR }}" http://archive.raspbian.org/raspbian
           #sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
 
       - name: chroot 2
