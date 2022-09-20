@@ -49,9 +49,9 @@ jobs:
         run: |
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" /debootstrap/debootstrap --second-stage
           echo deb http://mirrordirector.raspbian.org/raspbian/ ${{ env.CROSS_DEBIAN_VER }} main contrib non-free rpi | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
-          echo deb http://archive.raspberrypi.org/debian/ ${{ env.CROSS_DEBIAN_VER }} main | sudo tee -a "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
+          #echo deb http://archive.raspberrypi.org/debian/ ${{ env.CROSS_DEBIAN_VER }} main | sudo tee -a "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
           echo deb-src http://mirrordirector.raspbian.org/raspbian/ ${{ env.CROSS_DEBIAN_VER }} main contrib non-free rpi | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
-          echo deb-src http://archive.raspberrypi.org/debian/ ${{ env.CROSS_DEBIAN_VER }} main | sudo tee -a "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
+          #echo deb-src http://archive.raspberrypi.org/debian/ ${{ env.CROSS_DEBIAN_VER }} main | sudo tee -a "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
 
       - name: chroot 3
         run: |
