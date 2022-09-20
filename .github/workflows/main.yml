@@ -60,5 +60,5 @@ jobs:
 
       - name: chroot 4
         run: |
-          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get -y build-deps binutils
+          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get -y build-dep binutils
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get source binutils
