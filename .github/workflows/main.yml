@@ -52,4 +52,16 @@ jobs:
 
       - name: chroot 4
         run:
-         ls "${{ env.CROSS_ROOT_DIR }}"
+         cd "${{ env.CROSS_ROOT_DIR }}"
+         tar -zcvf rootfs.tar.gz .
+
+      - name: Create pre-release
+        if: github.ref == 'refs/heads/master'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: rootfs.tar.gz
+          prerelease: false
+          tag_name: "latest"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
