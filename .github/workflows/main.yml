@@ -41,7 +41,7 @@ jobs:
           sudo debootstrap --no-check-gpg --foreign --arch=${CROSS_ARCH} ${CROSS_DEBIAN_VER} "${CROSS_ROOT_DIR}" http://archive.raspbian.org/raspbian
           sudo mkdir -p "${{ env.CROSS_ROOT_DIR }}"
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" /debootstrap/debootstrap --second-stage
-          echo deb http://archive.raspberrypi.org/debian/ buster main ${{ env.CROSS_DEBIAN_VER }} main | | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
+          echo deb http://archive.raspberrypi.org/debian/ buster main ${{ env.CROSS_DEBIAN_VER }} main | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
 
       - name: chroot 3
         run: |
