@@ -35,31 +35,16 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -y install qemu-user-static debootstrap
-
-      # Runs a set of commands using the runners shell
-      - name: chroot
-        run: |
-          mkdir -p "${{ env.CROSS_ROOT_DIR }}"
-          #sudo mount -i -o remount,exec,dev /home/runner
-          wget -qO- https://archive.raspbian.org/raspbian.public.key | gpg --import -
-          sudo debootstrap --no-check-gpg --foreign --arch=${{ env.CROSS_ARCH }} ${{ env.CROSS_DEBIAN_VER }} "${{ env.CROSS_ROOT_DIR }}" http://archive.raspbian.org/raspbian
-
+         
       - name: chroot 2
         run: |
+          sudo debootstrap --no-check-gpg --foreign --arch=${CROSS_ARCH} ${CROSS_DEBIAN_VER} "${CROSS_ROOT_DIR}" http://archive.raspbian.org/raspbian
+          mkdir -p "${{ env.CROSS_ROOT_DIR }}"
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" /debootstrap/debootstrap --second-stage
-          echo deb http://mirrordirector.raspbian.org/raspbian/ ${{ env.CROSS_DEBIAN_VER }} main contrib non-free rpi | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
-          echo deb http://archive.raspberrypi.org/debian/ ${{ env.CROSS_DEBIAN_VER }} main | sudo tee -a "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
-          echo deb-src http://mirrordirector.raspbian.org/raspbian/ ${{ env.CROSS_DEBIAN_VER }} main contrib non-free rpi | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
-          echo deb-src http://archive.raspberrypi.org/debian/ ${{ env.CROSS_DEBIAN_VER }} main | sudo tee -a "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
+          echo deb http://archive.raspberrypi.org/debian/ buster main ${{ env.CROSS_DEBIAN_VER }} main | | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
 
       - name: chroot 3
         run: |
-          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
+          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 7FA3303E
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get update
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get upgrade
-
-      - name: chroot 4
-        run: |
-          ls "${{ env.CROSS_ROOT_DIR }}"
-          #sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get -y install binutils
-          #sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get source binutils
