@@ -59,7 +59,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
         uses: softprops/action-gh-release@v1
         with:
-          files: "${{ env.CROSS_ROOT_DIR }}"/rootfs.tar.gz
+          files: ${{ env.CROSS_ROOT_DIR }}/rootfs.tar.gz
           prerelease: false
           tag_name: "latest"
         env:
