@@ -14,10 +14,10 @@ on:
   workflow_dispatch:
 
 env:
-  CROSS_ROOT_DIR: ~/build-envs/armhf
+  CROSS_ROOT_DIR: /usr/local/build-envs/armhf
   CROSS_ARCH: armhf
   CROSS_DEBIAN_VER: buster
-  PSYDOOM_REPO_PATH: ~/GIT/PsyDoom
+  PSYDOOM_REPO_PATH: /usr/local/GIT/PsyDoom
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -39,7 +39,7 @@ jobs:
       - name: chroot 2
         run: |
           sudo debootstrap --no-check-gpg --foreign --arch=${CROSS_ARCH} ${CROSS_DEBIAN_VER} "${CROSS_ROOT_DIR}" http://archive.raspbian.org/raspbian
-          mkdir -p "${{ env.CROSS_ROOT_DIR }}"
+          sudo mkdir -p "${{ env.CROSS_ROOT_DIR }}"
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" /debootstrap/debootstrap --second-stage
           echo deb http://archive.raspberrypi.org/debian/ buster main ${{ env.CROSS_DEBIAN_VER }} main | | sudo tee "${{ env.CROSS_ROOT_DIR }}/etc/apt/sources.list"
 
