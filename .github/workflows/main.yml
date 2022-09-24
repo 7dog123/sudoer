@@ -52,7 +52,7 @@ jobs:
 
       - name: chroot 4
         run:
-         sudo cd "${{ env.CROSS_ROOT_DIR }}" && sudo tar -zcvf rootfs.tar.gz *
+         chroot "${{ env.CROSS_ROOT_DIR }}" && sudo tar -zcvf rootfs.tar.gz *
 
       - name: Create pre-release
         if: github.ref == 'refs/heads/master'
