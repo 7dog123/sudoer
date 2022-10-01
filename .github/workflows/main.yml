@@ -73,9 +73,9 @@ jobs:
             cd ../
             rm -rf cmake cmake-3.22.2.tar.gz
             exit
-        else
+         else
             echo "cmake is up to date with your current linux distrabution!"
-        fi
+         fi
            
       #- name: chroot 4
        # run: |
