@@ -50,18 +50,21 @@ jobs:
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get -y upgrade
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get autoclean
 
-      - name: chroot 4
-        run: |
-         cd "${{ env.CROSS_ROOT_DIR }}"
-         sudo tar -zcvf rootfs.tar.gz *
+      - name: Check the current cmake version using the following command:
+        run: sudo chroot "${CROSS_ROOT_DIR}" cmake --version
 
-      - name: Create pre-release
-        if: github.ref == 'refs/heads/master'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: ${{ env.CROSS_ROOT_DIR }}/rootfs.tar.gz
-          prerelease: false
-          tag_name: "latest"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #- name: chroot 4
+       # run: |
+         #cd "${{ env.CROSS_ROOT_DIR }}"
+         #sudo tar -zcvf rootfs.tar.gz *
+
+      #- name: Create pre-release
+       # if: github.ref == 'refs/heads/master'
+        #uses: softprops/action-gh-release@v1
+       # with:
+         # files: ${{ env.CROSS_ROOT_DIR }}/rootfs.tar.gz
+        #  prerelease: false
+         # tag_name: "latest"
+      #  env:
+          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
