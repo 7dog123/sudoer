@@ -55,8 +55,27 @@ jobs:
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get autoclean
 
       - name: Check the current cmake version using the following command
-        run: sudo chroot "${CROSS_ROOT_DIR}" cmake --version
-
+        run: |
+         if [[ ! $(sudo chroot "${{ env.CROSS_ROOT_DIR }}" cmake --version -ge 3.13.4 ) ]]; then
+            sudo chroot "${{ env.CROSS_ROOT_DIR }}" cmake --version
+         elif [[ ! $(sudo chroot "${{ env.CROSS_ROOT_DIR }}" cmake --version -lt 3.13.4 ) ]]; then
+           sudo chroot "${CROSS_ROOT_DIR}"
+           cd "${{ env.CROSS_ROOT_DIR }}"
+           mkdir cmake
+           cd cmake
+           apt -y install wget libssl-dev
+           wget https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2.tar.gz
+           tar -xf cmake-3.22.2.tar.gz
+           cd cmake-3.22.2
+           ./configure
+           make install
+           cd ../
+           rm -rf cmake cmake-3.22.2.tar.gz
+           exit
+       else
+           echo "cmake is up to date!"
+       fi
+           
       #- name: chroot 4
        # run: |
          #cd "${{ env.CROSS_ROOT_DIR }}"
