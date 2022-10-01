@@ -57,9 +57,7 @@ jobs:
       - name: Check the current cmake version using the following command
         shell: bash
         run: |
-          if [[ ! $(sudo chroot "${{ env.CROSS_ROOT_DIR }}" cmake --version -ge 3.13.4 ) ]]; then
-             sudo chroot "${{ env.CROSS_ROOT_DIR }}" cmake --version
-          elif [[ ! $(sudo chroot "${{ env.CROSS_ROOT_DIR }}" cmake --version -lt 3.13.4 ) ]]; then
+          if [[ ! $(sudo chroot "${{ env.CROSS_ROOT_DIR }}" cmake --version -lt 3.13.4 ) ]]; then
             sudo chroot "${CROSS_ROOT_DIR}"
             cd "${{ env.CROSS_ROOT_DIR }}"
             mkdir cmake
