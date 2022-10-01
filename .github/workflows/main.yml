@@ -47,8 +47,8 @@ jobs:
     
       - name: chroot 3
         run: |
-          #sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 7FA3303E
-          sudo chroot "${{ env.CROSS_ROOT_DIR }}" /debootstrap/debootstrap --second-stage
+          sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 7FA3303E
+          #sudo chroot "${{ env.CROSS_ROOT_DIR }}" /debootstrap/debootstrap --second-stage
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get update
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get -y upgrade
           sudo chroot "${{ env.CROSS_ROOT_DIR }}" apt-get -y install cmake
