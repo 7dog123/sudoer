@@ -61,7 +61,7 @@ jobs:
           minimum_version="3.13.4"
           if [[ "$(printf '%s\n' "$minimum_version" "$currentver" | sort -V | head -n1)" = "$minimum_version" ]]; then
             echo "cmake is up to date with your current linux distrabution!"
-          elif [[ "$(printf '%s\n' "$minimum_version" "$currentver" | sort -V | head -n1)" = "$currentver" ]]; then
+          else
             sudo chroot ${CROSS_ROOT_DIR}
             cd ${{ env.CROSS_ROOT_DIR }}
             mkdir cmake
